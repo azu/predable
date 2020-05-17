@@ -7,7 +7,7 @@ export type SectorFunction<
         [index: string]: any | undefined;
     },
     State extends any
-> = { get(): Domain; select(domain: Domain): State };
+> = { get(): Domain; select(domain: Domain): State; onChange(changeHandler: () => void): void };
 
 type InfraParameter = {
     [index: string]: any;
@@ -22,13 +22,15 @@ export type CreateSelect<
     State extends StateParameter = any
 > = (infra: Infra) => SectorFunction<Domain, State>;
 
-export const wrapPredableSelector = <Infra extends InfraParameter>(createSelect: CreateSelect<Infra>) => {
+export const wrapPredableStore = <State extends StateParameter, Infra extends InfraParameter>(
+    createSelect: CreateSelect<Infra>
+) => {
     return (infra: Infra) => {
         const selector = createSelect(infra);
         // override select
         const originalSelect = selector.select;
         const cacheMap = new Map<symbol, ReturnType<typeof originalSelect>>();
-        const select = (userSelector: (domain: DomainParameter) => StateParameter): StateParameter => {
+        const select = (userSelector: (domain: DomainParameter, state?: State) => StateParameter): StateParameter => {
             const domainContainer = selector.get();
             const domainValues = Object.values(domainContainer);
             const cacheKey = getCompositeSymbol(...domainValues);
@@ -43,6 +45,7 @@ export const wrapPredableSelector = <Infra extends InfraParameter>(createSelect:
         };
         return {
             get: selector.get,
+            onChange: selector.onChange,
             select,
         };
     };

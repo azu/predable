@@ -1,22 +1,35 @@
 import { domainRepository } from "./Repository";
-import { wrapPredableSelector } from "../frameworks/PredableState";
+import { wrapPredableStore } from "../frameworks/PredableState";
 
-export const createSelector = wrapPredableSelector(function DebuggableSelectorName(infra = { domainRepository }) {
+type State = {};
+export const createStore = wrapPredableStore(function DebuggableSelectorName(infra = { domainRepository }) {
+    let currentState: State | undefined;
     const get = () => {
         return { domain: infra.domainRepository.read() };
     };
-    const select = <R>(selector: ({ domain }: ReturnType<typeof get>) => R) => {
-        return selector(get());
+    const select = (selector: ({ domain }: ReturnType<typeof get>, prevState?: State) => State) => {
+        currentState = selector(get(), currentState);
+        return currentState;
+    };
+    const onChange = (changeHandler: () => void) => {
+        const unListenHandlers = Object.values(infra).map((repository) => {
+            return repository.onChange(changeHandler);
+        });
+        return () => {
+            unListenHandlers.forEach((unListen) => unListen());
+        };
     };
     return {
         // @Cost: middle
         get,
         // @Cost: middle
         select,
+        // @Cost, middle
+        onChange,
     };
 });
 // @Cost: low
-export const useSelector = createSelector({ domainRepository });
+export const store = createStore({ domainRepository });
 // State
 const initialData = {
     initial: true,
@@ -24,6 +37,7 @@ const initialData = {
 // @Cost: high
 export const getState = () => {
     return {
-        data: useSelector.select(({ domain }) => domain?.data ?? initialData),
+        data: store.select(({ domain }) => domain?.data ?? initialData),
     };
 };
+export const onChange = store.onChange;

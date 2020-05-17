@@ -44,7 +44,8 @@
     "tabWidth": 4
   },
   "dependencies": {
-    "composite-symbol": "^1.0.1"
+    "composite-symbol": "^1.0.1",
+    "shallow-equal-object": "^1.1.1"
   },
   "devDependencies": {
     "@types/mocha": "^7.0.2",

@@ -131,7 +131,7 @@ In sometimes, State and Domain is same value, but a state is beging mapped value
 ```ts
 import { domainRepository } from "./Repository";
 
-export const createSelector = (infra = { domainRepository }) => {
+export const createStore = (infra = { domainRepository }) => {
     const get = () => {
         return { domain: infra.domainRepository.read() };
     };
@@ -146,7 +146,7 @@ export const createSelector = (infra = { domainRepository }) => {
     };
 };
 // @Cost: low
-export const useSelector = createSelector({ domainRepository });
+export const store = createStore({ domainRepository });
 // State
 const initialData = {
     initial: true,
@@ -154,7 +154,7 @@ const initialData = {
 // @Cost: high
 export const getState = () => {
     return {
-        data: useSelector.select(({ domain }) => domain?.data ?? initialData),
+        data: store.select(({ domain }) => domain?.data ?? initialData),
     };
 };
 ```
@@ -192,10 +192,10 @@ UseCase:
 State:
 
 ```diff
-+ import { wrapPredableSelector } from "../frameworks/PredableState";
++ import { wrapPredableStore } from "../frameworks/PredableState";
 
-- export const createSelector = (infra = { domainRepository }) => {
-+ export const createSelector = wrapPredableSelector(function DebuggableSelectorName(infra = { domainRepository }) {
+- export const createStore = (infra = { domainRepository }) => {
++ export const createStore = wrapPredableStore(function DebuggableSelectorName(infra = { domainRepository }) {
 ```
 
 This does not change interface, It just wraps your implementations!
