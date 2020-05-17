@@ -1,0 +1,56 @@
+{
+  "private": true,
+  "name": "root-predable",
+  "version": "1.0.0",
+  "description": "Predable is type only state management framework.",
+  "keywords": [
+    "DDD",
+    "typescript",
+    "type",
+    "state",
+    "management",
+    "JavaScript"
+  ],
+  "homepage": "https://github.com/azu/predable",
+  "bugs": {
+    "url": "https://github.com/azu/predable/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azu/predable.git"
+  },
+  "license": "MIT",
+  "author": "azu",
+  "main": "lib/predable.js",
+  "types": "lib/predable.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "build": "yarn workspaces run build",
+    "clean": "yarn workspaces run clean",
+    "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\""
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,css}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "printWidth": 120,
+    "singleQuote": false,
+    "tabWidth": 4
+  },
+  "devDependencies": {
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.2",
+    "prettier": "^2.0.5"
+  }
+}
