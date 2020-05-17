@@ -183,6 +183,8 @@ You can opt-in Predable framework by following changes.
 UseCase: 
 
 ```diff
++ import { wrapPredableUseCase } from "../frameworks/WrapPredableUseCase";
+
 - export const createAction = (infra = { domainRepository }) => {
 + export const createAction = wrapPredableUseCase(function DebuggableUseCaseName(infra = { domainRepository }) {
 ```
@@ -190,6 +192,8 @@ UseCase:
 State:
 
 ```diff
++ import { wrapPredableSelector } from "../frameworks/PredableState";
+
 - export const createSelector = (infra = { domainRepository }) => {
 + export const createSelector = wrapPredableSelector(function DebuggableSelectorName(infra = { domainRepository }) {
 ```
