@@ -1,13 +1,8 @@
 import { createAction } from "./UseCase";
 import { getState } from "./State";
 
-console.log("initial state", getState());
+console.log("initial state", getState()); // { data: { initial: true } }
 createAction().execute({
     value: "new value",
 });
-console.time("start");
-console.log("updated state", getState());
-console.log("updated state", getState());
-console.log("updated state", getState());
-console.log("updated state", getState());
-console.timeLog("start");
+console.log("updated state", getState()); // { data: { value: 'new value' } }

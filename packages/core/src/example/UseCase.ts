@@ -1,9 +1,9 @@
 import { domainRepository } from "./Repository";
 import { Domain, DomainId } from "./Domain";
-import { PredableUseCase } from "../frame/PredableUseCase";
+import { wrapPredableUseCase } from "../frameworks/WrapPredableUseCase";
 
 export class Payload {}
-export const createAction = PredableUseCase(function DebuggableUseCaseName(infra = { domainRepository }) {
+export const createAction = wrapPredableUseCase(function DebuggableUseCaseName(infra = { domainRepository }) {
     return {
         execute(payload: Payload) {
             const domain =

@@ -1,7 +1,7 @@
 import { domainRepository } from "./Repository";
-import { PredableSelector } from "../frame/PredableState";
+import { wrapPredableSelector } from "../frameworks/PredableState";
 
-export const createSelector = PredableSelector(function DebuggableSelectorName(infra = { domainRepository }) {
+export const createSelector = wrapPredableSelector(function DebuggableSelectorName(infra = { domainRepository }) {
     const get = () => {
         return { domain: infra.domainRepository.read() };
     };

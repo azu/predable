@@ -22,7 +22,7 @@ export type CreateSelect<
     State extends StateParameter = any
 > = (infra: Infra) => SectorFunction<Domain, State>;
 
-export const PredableSelector = <Infra extends InfraParameter>(createSelect: CreateSelect<Infra>) => {
+export const wrapPredableSelector = <Infra extends InfraParameter>(createSelect: CreateSelect<Infra>) => {
     return (infra: Infra) => {
         const selector = createSelect(infra);
         // override select
