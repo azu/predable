@@ -1,15 +1,8 @@
 {
-  "name": "@predable/core",
+  "name": "predable",
   "version": "1.0.0",
-  "description": "Predable is type only state management framework.",
-  "keywords": [
-    "predable",
-    "typescript",
-    "state",
-    "management",
-    "type"
-  ],
-  "homepage": "https://github.com/azu/predable/tree/master/packages/core/",
+  "description": "Predable counter example",
+  "homepage": "https://github.com/azu/predable/tree/master/examples/counter/",
   "bugs": {
     "url": "https://github.com/azu/predable/issues"
   },
@@ -24,13 +17,14 @@
     "lib/",
     "src/"
   ],
-  "main": "lib/core.js",
-  "types": "lib/core.d.ts",
+  "main": "lib/counter.js",
+  "types": "lib/counter.d.ts",
   "directories": {
     "lib": "lib",
     "test": "test"
   },
   "scripts": {
+    "dev": "parcel serve index.html",
     "build": "cross-env NODE_ENV=production tsc -p .",
     "clean": "rimraf lib/",
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
@@ -43,22 +37,19 @@
     "singleQuote": false,
     "tabWidth": 4
   },
-  "dependencies": {
-    "composite-symbol": "^1.0.2",
-    "shallow-equal-object": "^1.1.1"
-  },
   "devDependencies": {
     "@types/mocha": "^7.0.2",
-    "@types/node": "^14.0.5",
+    "@types/node": "^14.0.1",
     "cross-env": "^7.0.2",
-    "mocha": "^7.2.0",
+    "mocha": "^7.1.2",
+    "parcel-bundler": "^1.12.4",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "ts-node": "^8.10.1",
     "ts-node-test-register": "^8.0.1",
-    "typescript": "^3.9.3"
+    "typescript": "^3.9.2"
   },
-  "publishConfig": {
-    "access": "public"
+  "dependencies": {
+    "composite-symbol": "^1.0.2"
   }
 }

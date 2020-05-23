@@ -1,26 +1,6 @@
 import getCompositeSymbol from "composite-symbol";
 import { log } from "./Logger";
-
-export type PrediableStore<
-    Domain extends {
-        [index: string]: any | undefined;
-    }
-> = {
-    name?: string;
-    get(): Domain;
-    select<R>(selector: (domain: Domain) => R): R;
-    onChange(changeHandler: () => void): void;
-};
-
-type InfraParameter = {
-    [index: string]: any;
-};
-type DomainParameter = {
-    [index: string]: any | undefined;
-};
-export type CreateStore<Infra extends InfraParameter, Domain = DomainParameter> = (
-    infra: Infra
-) => PrediableStore<Domain>;
+import { PrediableStore } from "./PredableState";
 
 function assertIsSelector<T>(val: any): asserts val is PrediableStore<T> {
     if (typeof val !== "object") {
@@ -40,6 +20,20 @@ function assertIsSelector<T>(val: any): asserts val is PrediableStore<T> {
     }
 }
 
+export const createMemorizedSelectFromGet = <T>(get: () => T): PrediableStore<T>["select"] => {
+    const cacheMap = new Map<symbol, ReturnType<PrediableStore<T>["select"]>>();
+    return <R>(userSelector: (domains: T) => R): R => {
+        const domainContainer = get();
+        const domainValues = Object.values(domainContainer);
+        const cacheKey = getCompositeSymbol(...domainValues);
+        if (cacheMap.has(cacheKey)) {
+            return (cacheMap.get(cacheKey) as any) as R;
+        }
+        const selectedState = userSelector(domainContainer);
+        cacheMap.set(cacheKey, selectedState as any);
+        return selectedState;
+    };
+};
 export const memorizePredableStore = <T>(store: PrediableStore<T>): PrediableStore<T> => {
     assertIsSelector<T>(store);
     const originalSelect = store.select;
@@ -63,29 +57,4 @@ export const memorizePredableStore = <T>(store: PrediableStore<T>): PrediableSto
         onChange: store.onChange,
         select,
     };
-};
-
-function assertIsStoreCreator(val: unknown): asserts val is CreateStore<{}> {
-    if (typeof val !== "function") {
-        throw new Error(`Store should be function`);
-    }
-}
-
-function assertStoreArguments(args: unknown[]): asserts args is [InfraParameter] {
-    if (args.length === 0) {
-        throw new Error("Store should have infra parameter");
-    }
-}
-
-export const wrapPredableStore = <T>(createStore: T): T => {
-    assertIsStoreCreator(createStore);
-    const wrappedSelector = (...args: any[]) => {
-        assertStoreArguments(args);
-        const store = createStore(...args);
-        return memorizePredableStore({
-            name: createStore.name,
-            ...store,
-        });
-    };
-    return (wrappedSelector as any) as T;
 };

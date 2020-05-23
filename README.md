@@ -27,24 +27,24 @@ See Implementations
 Domain has logic. It is just pure JavaScript.
 
 ```ts
-export class DomainId {
+export class CounterId {
     type = "Domain";
 
     constructor(public readonly value: string) {}
 }
 
-export type DomainProps<Id extends DomainId> = {
+export type CounterProps<Id extends CounterId> = {
     id: Id; // nominal id
     // other values
     data: any;
 };
 // @Cost: low
-export class Domain<Id extends DomainId> {
+export class Domain<Id extends CounterId> {
     id: Id;
     // other values
     data: any;
 
-    constructor(props: DomainProps<Id>) {
+    constructor(props: CounterProps<Id>) {
         this.id = props.id;
         // other values
         this.data = props.data;
@@ -66,9 +66,9 @@ A Repository store a domain instance eventually.
 Repositories use Key-Value map object in memory or Database.
 
 ```ts
-import { Domain, DomainId } from "./Domain";
+import { Domain, CounterId } from "./Domain";
 
-export class DomainMap<K extends DomainId, V extends Domain<K>> extends Map<K, V> {
+export class DomainMap<K extends CounterId, V extends Domain<K>> extends Map<K, V> {
     private __last__value__: undefined | V;
 
     read(): undefined | V {
@@ -86,11 +86,11 @@ export class DomainMap<K extends DomainId, V extends Domain<K>> extends Map<K, V
     }
 }
 
-export const createDomainRepository = <T extends Domain<DomainId>>() => {
+export const createCounterRepository = <T extends Domain<CounterId>>() => {
     return new DomainMap<T["id"], T>();
 };
 
-export const domainRepository = createDomainRepository();
+export const domainRepository = createCounterRepository();
 ```
 
 ### UseCase
@@ -100,7 +100,7 @@ Read a data from repository, Domain work something, and store the domain to repo
 
 ```ts
 import { domainRepository } from "./Repository";
-import { Domain, DomainId } from "./Domain";
+import { Domain, CounterId } from "./Domain";
 
 export class Payload {}
 export const createAction = (infra = { domainRepository }) => {
@@ -109,7 +109,7 @@ export const createAction = (infra = { domainRepository }) => {
             const domain =
                 infra.domainRepository.read() ??
                 new Domain({
-                    id: new DomainId("unique-id"),
+                    id: new CounterId("unique-id"),
                     data: {},
                 });
             // Domain works
@@ -131,7 +131,7 @@ In sometimes, State and Domain is same value, but a state is beging mapped value
 ```ts
 import { domainRepository } from "./Repository";
 
-export const createStore = (infra = { domainRepository }) => {
+export const createCounterStore = (infra = { domainRepository }) => {
     const get = () => {
         return { domain: infra.domainRepository.read() };
     };
@@ -146,7 +146,7 @@ export const createStore = (infra = { domainRepository }) => {
     };
 };
 // @Cost: low
-export const store = createStore({ domainRepository });
+export const store = createCounterStore({ domainRepository });
 // State
 const initialData = {
     initial: true,
@@ -194,8 +194,8 @@ State:
 ```diff
 + import { wrapPredableStore } from "../frameworks/PredableState";
 
-- export const createStore = (infra = { domainRepository }) => {
-+ export const createStore = wrapPredableStore(function DebuggableSelectorName(infra = { domainRepository }) {
+- export const createCounterStore = (infra = { domainRepository }) => {
++ export const createCounterStore = wrapPredableStore(function DebuggableSelectorName(infra = { domainRepository }) {
 ```
 
 This does not change interface, It just wraps your implementations!
