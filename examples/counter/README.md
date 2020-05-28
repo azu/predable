@@ -1,16 +1,16 @@
 # predable
 
-Predable counter example
-
-## Install
-
-Install with [npm](https://www.npmjs.com/):
-
-    npm install predable
+Predable counter example.
 
 ## Usage
 
-- [ ] Write usage instructions
+Start demo
+
+    yarn dev
+
+Build
+
+    yarn run build
 
 ## Changelog
 

@@ -1,9 +1,9 @@
-import { EventEmitter } from "events";
+import events from "events";
 import { Counter, CounterId } from "./Counter";
 
 export class DomainMap<K extends CounterId, V extends Counter<K>> extends Map<K, V> {
     private __last__value__: undefined | V;
-    private events = new EventEmitter();
+    private events = new events.EventEmitter();
 
     read(): undefined | V {
         return this.__last__value__;
