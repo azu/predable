@@ -41,7 +41,7 @@ export const memorizePredableStore = <T>(store: PrediableStore<T>): PrediableSto
     const select = <R>(userSelector: (domain: ReturnType<typeof store.get>) => R): R => {
         const domainContainer = store.get();
         const domainValues = Object.values(domainContainer);
-        const cacheKey = getCompositeSymbol(...domainValues);
+        const cacheKey = getCompositeSymbol(...domainValues, userSelector);
         if (cacheMap.has(cacheKey)) {
             log(`${store.name ? "[" + store.name + "]" : ""} No update state`);
             return (cacheMap.get(cacheKey) as any) as R;
